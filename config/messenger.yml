@@ -1,0 +1,15 @@
+development: &development
+  type: xmpp4r
+  jid: jid@jabber.com
+  password: password
+  host: jabber.com
+  port: 5222
+  status: hello world
+  ssl: false
+  debug: false
+
+test:
+  type: mock
+
+production:
+  <<: *development

@@ -1,0 +1,40 @@
+<%= content_tag('div', l(:messenger_view_notice_please_verify, :verification_code => @user_messenger.verification_code), :class => 'flash notice') if @user_messenger.verification_code and not flash[:notice] %>
+
+<h2><%=l(:messenger_view_label_messenger)%></h2>
+
+<%= error_messages_for 'user_messenger' %>
+
+<% form_for :user_messenger, @user_messenger, :url => { :action => "index" }, :builder => TabularFormBuilder, :lang => current_language, :html => { :id => 'my_account_form' } do |f| %>
+  <div class="splitcontentleft">
+      <h3><%=l(:messenger_view_label_configuration)%></h3>
+      <div class="box tabular">
+          <p><%= f.text_field :messenger_id %></p>
+          <p><%= f.select :issue_status_when_starting_timer_id, issue_status_to_select %></p>
+          <p><%= f.select :issue_status_when_finishing_timer_id, issue_status_to_select %></p>
+          <p><%= f.select :issue_status_when_finishing_timer_with_full_ratio_id, issue_status_to_select %></p>
+          <p><%= f.check_box :resume_when_become_online %></p>
+          <p><%= f.check_box :pause_when_become_offline_or_away %></p>
+          <p><%= f.check_box :messenger_notifications %></p>
+          <p><%= f.check_box :assigning_issue_when_starting_timer %></p>
+      </div>
+      <%= submit_tag l(:button_save) %>
+  </div>
+<% end %>
+
+<div class="splitcontentright">
+    <h3><%=l(:messenger_view_label_help)%></h3>
+    <div class="box">
+        <p><%= l(:messenger_view_help) %></p>
+    </div>
+    <% @groups.each do |grp, cmds| %>
+        <h3><%= l("messenger_help_group_#{grp.to_s}".to_sym) %></h3>
+        <div class="box">
+          <% cmds.each do |cmd| %>
+            <p><strong><%= h(cmd.to_s) %></strong></p>
+            <p><%= l("messenger_help_command_#{cmd.command.to_s}_long".to_sym) %></p>
+          <% end %>
+        </div>
+    <% end %>
+</div>
+
+<% html_title(l(:messenger_view_label_messenger)) -%>
