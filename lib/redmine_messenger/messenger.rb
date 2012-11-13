@@ -66,11 +66,11 @@ module RedmineMessenger
       private
 
       # Reads the configuration from config/messenger.yml.
-      def load_config(config_file = "#{RAILS_ROOT}/config/messenger.yml")
+      def load_config(config_file = "#{Rails.root}/config/messenger.yml")
         unless File.exists?(config_file)
           raise "Config not found: #{config_file}"
         end
-        YAML.load_file(config_file)[RAILS_ENV]
+        YAML.load_file(config_file)[Rails.env]
       end
 
       # Creates messenger for given configuration (see <tt>load_config</tt>).

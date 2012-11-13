@@ -17,7 +17,7 @@ module RedmineMessenger
         connect
 
         @client.on_exception do |e,client,where|
-          RAILS_DEFAULT_LOGGER.fatal "RedmineMessenger: exception catched '#{e.message}' (#{where.to_s}); trying to reconnect ..."
+          Rails.logger.fatal "RedmineMessenger: exception catched '#{e.message}' (#{where.to_s}); trying to reconnect ..."
           sleep 5
           reconnect
         end
@@ -25,13 +25,13 @@ module RedmineMessenger
         @client.add_message_callback do |m|
           unless m.type == :error
             begin
-              RAILS_DEFAULT_LOGGER.debug "RedmineMessenger: receiving message from #{m.from.node}@#{m.from.domain}"
+              Rails.logger.debug "RedmineMessenger: receiving message from #{m.from.node}@#{m.from.domain}"
               receive_message("#{m.from.node}@#{m.from.domain}", m.body)
             rescue => e
-              RAILS_DEFAULT_LOGGER.error "RedmineMessenger: exception catched while receiving message '#{e.message}'"
+              Rails.logger.error "RedmineMessenger: exception catched while receiving message '#{e.message}'"
             end
           else
-            RAILS_DEFAULT_LOGGER.error "RedmineMessenger: error received '#{m.body}'"
+            Rails.logger.error "RedmineMessenger: error received '#{m.body}'"
           end
         end
 
@@ -46,17 +46,17 @@ module RedmineMessenger
 
           unless old_status == new_status
             begin
-              RAILS_DEFAULT_LOGGER.debug "RedmineMessenger: receiving status from #{item.jid.node}@#{item.jid.domain}"
+              Rails.logger.debug "RedmineMessenger: receiving status from #{item.jid.node}@#{item.jid.domain}"
               receive_status("#{item.jid.node}@#{item.jid.domain}", new_status)
             rescue => e
-              RAILS_DEFAULT_LOGGER.error "RedmineMessenger: exception catched while receiving status '#{e.message}'"
+              Rails.logger.error "RedmineMessenger: exception catched while receiving status '#{e.message}'"
             end
           end
         end
       end
 
       def send_message(to, body)
-        RAILS_DEFAULT_LOGGER.debug "RedmineMessenger: sending message to #{to}"
+        Rails.logger.debug "RedmineMessenger: sending message to #{to}"
         @client.send(Jabber::Message.new(to, body).set_type(:chat))
       end
 
@@ -64,7 +64,7 @@ module RedmineMessenger
 
       def reconnect
         if @client.is_connected?
-          RAILS_DEFAULT_LOGGER.info "RedmineMessenger: disconnecting ..."
+          Rails.logger.info "RedmineMessenger: disconnecting ..."
           @client.close
         end
         connect
@@ -72,7 +72,7 @@ module RedmineMessenger
 
       def connect
         unless @client.is_connected?
-          RAILS_DEFAULT_LOGGER.info "RedmineMessenger: connecting ..."
+          Rails.logger.info "RedmineMessenger: connecting ..."
           @client.connect(config['host'],config['port'])
           @client.auth(config['password'])
           @client.send(Jabber::Presence.new(:chat, config['message']))

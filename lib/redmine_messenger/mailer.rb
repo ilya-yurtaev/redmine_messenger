@@ -1,6 +1,5 @@
 class Mailer < ActionMailer::Base
 
-  alias_method :create_without_messenger!, :create!
 
   def create!(method_name, *parameters)
     mail = create_without_messenger!(method_name, *parameters)
@@ -24,5 +23,7 @@ class Mailer < ActionMailer::Base
 
     mail
   end
+
+  alias_method :create_without_messenger!, :create!
 
 end
